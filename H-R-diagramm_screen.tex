@@ -1,0 +1,385 @@
+\documentclass[a4paper,14pt]{article}
+\usepackage{extsizes} %14pt
+
+\usepackage{gfsartemisia-euler} %для математических шрифтов
+\usepackage{tgbonum} %для основного текста
+\usepackage[light]{anttor}
+%\usefonttheme{serif}
+
+\usepackage[english, russian]{babel}
+\usepackage[utf8]{inputenc}
+\usepackage[T2A]{fontenc}
+\usepackage{tikz, pgfplots}
+\usetikzlibrary{arrows.meta}
+\usepackage[left=0.7cm,top=1cm,right=0.7cm,bottom=1cm]{geometry}
+\usepackage{indentfirst}
+\usepackage{lscape, lipsum}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage{amsthm}
+
+\usepackage{graphicx}
+\usepackage{xcolor}
+\usepackage{ragged2e}
+\usepackage[tikz]{bclogo}
+\usepackage{wasysym}
+\usepackage{array}
+
+
+\usepgfplotslibrary{external}
+\usepgfplotslibrary{fillbetween}
+\tikzexternalize
+
+\renewcommand{\deg}{\ensuremath{^{\circ}}}
+
+%\pgfplotstableread{H-R-test.txt}\loadedtable
+%\def\loadedtable{H-R-data.txt}
+\pgfplotsset{
+	compat=1.13, 
+	width=24cm,
+	height=15cm,
+}
+
+\newenvironment{itemize*}%
+{\vspace{0.1cm}
+	\begin{itemize}%
+		\setlength{\itemsep}{1pt}%
+		\setlength{\parskip}{1pt}}%
+	{\end{itemize}
+	\vspace{-0.1cm}
+}
+
+\begin{document}
+\thispagestyle{empty}
+\begin{landscape}
+%\begin{center}
+%	\begin{Large}
+%		\textbf{Диаграмма Герцшпрунга--Рассела}
+%	\end{Large}
+%\end{center}	
+	
+\noindent
+\begin{center}
+	\begin{tikzpicture}
+	\pgfplotsset{set layers}
+	
+	\tikzset{%
+		classstyle/.style={color=purple!50!black, opacity=0.4, line cap=round, smooth, line width={0.1cm}},%mark=*,
+		instability/.style={color=white!50!black, opacity=0.4, line cap=round, smooth, line width={1.0cm}},%mark=*,
+	};
+	
+	% Рисуем сами звезды
+	\begin{axis}[
+	scale only axis,
+	xmin=-0.6,
+	ymin=-10,
+	xmax=2,
+	ymax=15,
+	y dir=reverse,
+	axis y line*=none,
+	%axis x line*=none,
+	axis x line*=top,
+	restrict y to domain= -10:20,
+	restrict x to domain= -0.5:2.5,
+	xtick={-0.445319082,
+		-0.405512489,
+		-0.343058776,
+		-0.23233056,
+		0.009365914,
+		0.094639569,
+		0.203812398,
+		0.270510045,
+		0.347693699,
+		0.544418114,
+		0.671905766,
+		0.826770828,
+		1.018309707,
+		1.260472353,
+		1.575182241,
+		1.998975087,
+		2.59760267,
+		3.502541005
+	},
+	xticklabels={ , , , , , , , , , , , , , , , },
+	xtick style={thin, gray},
+	%hide x axis,
+	hide y axis,
+	]
+	
+	\addplot[mark=*, mark size=1pt, only marks, scatter, scatter src=x] table[header=true, x index=0, y index=1] {H-R-data.txt};%{\loadedtable};
+	\addplot[mark=*, mark size=1pt, only marks, color=black!50!white] table[header=false, x index=0, y index=1] {wd.txt}; %scatter, scatter src=x
+	
+	%\addplot[mark=*, mark size=1pt, only marks, scatter, scatter src=x] table[header=true, x index=0, y index=1] {H-R-data_test.txt};
+	
+	\end{axis}
+	
+	%Верхняя и правая оси
+	\begin{axis}[
+	scale only axis,
+	ymode=log,
+	%title={Диаграмма Герцшпрунга-Рассела},
+	xmin=-0.6,
+	xmax=2,
+	ymin=8.55E-5,
+	ymax=8.55E+5,
+	axis y line*=right,
+	axis x line*=top,
+	ylabel={Светимость $\mathrm{L/L_{\odot}}$},
+	xlabel={Температура, K},
+	%x dir=reverse,
+	xtick={-0.445319082, 0.009365914, 0.270510045, 0.544418114, 0.826770828, 1.575182241},
+	xticklabels={$30000$,$10000$,$7500$,$6000$,$5000$,$3500$},
+	xtick style={thick, black},
+	ytick style={thin, black},
+	restrict y to domain= -10:20,
+	restrict x to domain= -0.5:2.5,
+	%grid=major
+	]
+	
+	%Расставляем буквы классов внизу
+	\addplot[
+	mark=none, 
+	only marks,
+	point meta=explicit symbolic, 
+	nodes near coords,
+	every node near coord/.append style={xshift=0pt, yshift=-1pt, anchor=south},
+	] coordinates {
+		(	-0.5	,	0.0001	) [O]
+		(	-0.22	,	0.0001	) [B]
+		(	 0.12	,	0.0001	) [A]
+		(	 0.4	,	0.0001	) [F]
+		(	 0.7	,	0.0001	) [G]
+		(	 1.2	,	0.0001	) [K]
+		(	 1.8	,	0.0001	) [M]	
+		(	-0.5	,	400000	) [O]
+		(	-0.22	,	400000	) [B]
+		(	 0.12	,	400000	) [A]
+		(	 0.4	,	400000	) [F]
+		(	 0.7	,	400000	) [G]
+		(	 1.2	,	400000	) [K]
+		(	 1.8	,	400000	) [M]	
+	};
+	\end{axis}
+	
+	%Левая и нижняя оси, дополнительная информация
+	\begin{axis}[
+	scale only axis,
+	xlabel={Показатель цвета $\mathrm{B - V}$},
+	ylabel={Абсолютная звездная величина $\mathrm{M_V}$},
+	%grid=major,
+	xmin=-0.6,
+	ymin=-10,
+	xmax=2,
+	ymax=15,
+	y dir=reverse,
+	axis y line*=left,
+	axis x line*=bottom,
+	restrict y to domain= -10:20,
+	restrict x to domain= -0.5:2.5,
+	every node near coord/.append style={font=\footnotesize, fill=white!50, opacity=0.6, text opacity=1, rounded corners},
+	tick style={thin, black}
+	]
+	
+	%Яркие звезды-2
+	\addplot [
+	mark=star, 
+	only marks,
+	point meta=explicit symbolic, 
+	nodes near coords,
+	every node near coord/.append style={xshift=0pt, yshift=-2pt, anchor=north},
+	] coordinates {
+		(	0.65	,	4.83	) [Солнце]
+		(	0.15	,	-5.71	) [Канопус]
+		(	1.22	,	-0.33	) [Арктур]
+		(	0.80	,	-0.51	) [Капелла]
+		(	-0.03	,	-7.84	) [Ригель]
+		(	-0.16	,	-2.86	) [Ахернар]
+		(	0.22	,	2.19	) [Альтаир]
+		(	0.99	,	1.05	) [Поллукс]
+		
+	};
+	
+	%Яркие звезды-3
+	\addplot [
+	mark=star, 
+	only marks,
+	point meta=explicit symbolic, 
+	nodes near coords,
+	every node near coord/.append style={xshift=2pt, yshift=0pt, anchor=west},
+	] coordinates {
+		
+		(	0.15	,	1.73	) [Фомальгаут]
+		(	-0.15	,	-3.92	) [Мимоза]
+		(	0.43	,	2.65	) [Процион]
+		(	1.44	,	-0.64	) [Альдебаран]
+		(	-0.03	,	11.18	) [Сириус B]
+		
+	};
+	
+	%Яркие звезды-4 и кривые равных радиусов
+	\addplot [
+	mark=star, 
+	only marks,
+	point meta=explicit symbolic, 
+	nodes near coords,
+	every node near coord/.append style={xshift=0pt, yshift=2pt, anchor=south},
+	] coordinates {
+		
+		(	0.00	,	0.57	) [Вега]	
+		(	0.71	,	4.08	) [Толиман]
+		(	-0.23	,	-5.75	) [Хадар]
+	};
+	\addplot [
+	mark=star, 
+	only marks,
+	point meta=explicit symbolic, 
+	nodes near coords,
+	every node near coord/.append style={xshift=-2pt, yshift=0pt, anchor=east},
+	] coordinates {
+		(	0.01	,	1.45	) [Сириус]
+		(	-0.24	,	-4.39	) [Акрукс]
+		(	-0.24	,	-3.55	) [Спика]
+		(	1.87	,	-5.65	) [Антарес]
+		(	1.85	,	-5.14	) [Бетельгейзе]
+		(	0.09	,	-8.78	) [Денеб]
+	};
+	
+	\def\xsun{0.65}
+	
+	\foreach \rr in {0.01, 0.1, 1, 10, 100} {
+		
+		\addplot [color=green!50!black, samples=500] {4.83 - 5*log10(\rr)  - 10*log10( (23*x+29)*(46*\xsun+31)*(46*\xsun+85)/( (23*\xsun+29)*(46*x+31)*(46*x+85))  )};
+		
+	};
+	
+	\addplot[
+	only marks,
+	point meta=explicit symbolic, 
+	nodes near coords,
+	every node near coord/.append style={yshift=-5pt, color=green!50!black, fill=none, rotate=-10},
+	] coordinates {
+		(	1.8	,	12.14 ) [$0.1 R_{\odot}$]
+		(	1.8	,	 7.14 ) [$1 R_{\odot}$]
+		(	1.8	,	 2.14 ) [$10 R_{\odot}$]
+		(	1.8	,	-2.9 )  [$100 R_{\odot}$]
+	};
+	\addplot[
+	only marks,
+	point meta=explicit symbolic, 
+	nodes near coords,
+	every node near coord/.append style={yshift=-5pt, color=green!50!black, fill=none, rotate=-20},
+	] coordinates {
+		(	0.54	,	14.53 ) [$0.01 R_{\odot}$]
+	};
+	
+	%Drawing Classes
+%	\addplot [classstyle] coordinates {(-0.2,-6.5) (1.2, -7.6) (1.6, -7.9)};
+%	\addplot [classstyle] coordinates {(-0.2,-5.2) (0.4, -4.9) (1.6, -5.2)};
+%	\addplot [classstyle] coordinates {(-0.2,-3.0) (0.4, -2.6) (1.6, -3.0)};
+%	\addplot [classstyle] coordinates {(0.0,-1.8) (0.4, 0.0) (1.0, 0.2) (1.6, -1.0)};
+%	\addplot [classstyle] coordinates {(-0.05,-1.9) (0.2, 1.0) (0.8, 2.7) (1.2, 2.0)};
+%	\addplot [classstyle] coordinates {(-0.1,-2.0) (0.1, 1.5) (0.6, 4.2) (0.8, 5.5) (1.35, 8.1) (1.55, 10.7)};
+%	\addplot [classstyle] coordinates {(-0.2, 2.0) (0.6, 7.0) (1.0, 8.7)};
+%	\addplot [classstyle] coordinates {(-0.47, 6.0) (-0.32, 9.0) (0.0, 12.0) (0.4, 13.7)};
+	
+%	\addplot[
+%	only marks,
+%	point meta=explicit symbolic, 
+%	nodes near coords,
+%	every node near coord/.append style={color=purple!50!black, fill=none},
+%	] coordinates {
+%		(	0.8	,	-7.4 )  [$Ia$]
+%		(	0.8	,	-5.0 )  [$Ib$]
+%		(	0.8	,	-2.7 )  [$II$]
+%		(	0.8,	 1.0  ) [$III$]
+%		(	1.2	,	 2.9  ) [$IV$]
+%		(	1.2	,	 7.0  ) [$V$]
+%		(	0.8	,	 8.8  ) [$VI$]
+%		(	0.5	,	13.5 )  [$VII$]
+%	};
+	
+	%Полоса нестабильности. Масса = 10 масс Солнца, z = 0.0004
+%	\addplot[blue!50!black, dashed, name path=blueborder] coordinates {
+%		(	-0.138529266	,	10.09204112	)
+%		(	-0.114439784	,	9.239730651	)
+%		(	-0.087988095	,	8.351140923	)
+%		(	-0.058827675	,	7.423045586	)
+%		(	-0.02654339	,	6.4517678	)
+%		(	0.009365914	,	5.433092248	)
+%		(	0.04951035	,	4.362154572	)
+%		(	0.094639569	,	3.233300889	)
+%		(	0.145684137	,	2.039907101	)
+%		(	0.203812398	,	0.774143372	)
+%		(	0.270510045	,	-0.573337515	)
+%		(	0.347693699	,	-2.013819479	)
+%		(	0.437876784	,	-3.561098132	)
+%		(	0.544418114	,	-5.23228639	)
+%		(	0.671905766	,	-7.048971455	)
+%		(	0.826770828	,	-9.038924794	)
+%		
+%		
+%		
+%	};
+%	\addplot[red!50!black, dashed, name path=redborder] coordinates {
+%		(	-0.138529266	,	10.2696638	)
+%		(	-0.114439784	,	9.587992709	)
+%		(	-0.087988095	,	8.87730576	)
+%		(	-0.058827675	,	8.135022542	)
+%		(	-0.02654339	,	7.358202347	)
+%		(	0.009365914	,	6.543473798	)
+%		(	0.04951035	,	5.686946421	)
+%		(	0.094639569	,	4.784098286	)
+%		(	0.145684137	,	3.829631492	)
+%		(	0.203812398	,	2.817283798	)
+%		(	0.270510045	,	1.739579375	)
+%		(	0.347693699	,	0.587493437	)
+%		(	0.437876784	,	-0.650007639	)
+%		(	0.544418114	,	-1.986610625	)
+%		(	0.671905766	,	-3.439580791	)
+%		(	0.826770828	,	-5.031129535	)
+%		(	1.018309707	,	-6.790505047	)
+%		(	1.260472353	,	-8.757319535	)
+%		
+%	};
+%	
+%	\addplot [gray!30] fill between [of=blueborder and redborder];
+	
+%	\addplot[
+%	only marks,
+%	point meta=explicit symbolic, 
+%	nodes near coords,
+%	every node near coord/.append style={yshift=0pt, color=black, fill=none, rotate=60},
+%	] coordinates {
+%		(	0.7	,	-4.5 ) [\emph{Цефеиды}]
+%	};
+%	\addplot[
+%	only marks,
+%	point meta=explicit symbolic, 
+%	nodes near coords,
+%	every node near coord/.append style={yshift=0pt, color=black, fill=none, rotate=65},
+%	] coordinates {
+%		(	0.42,	-0.5 ) [\emph{RR Лиры}]
+%	};
+%	\addplot[
+%	only marks,
+%	point meta=explicit symbolic, 
+%	nodes near coords,
+%	every node near coord/.append style={yshift=0pt, color=black, fill=none, rotate=80},
+%	] coordinates {
+%		(	0.00,	 9.5 ) [\emph{ZZ Кита}]
+%	};
+	
+	
+	
+	
+	\end{axis}
+	
+	
+	
+	\end{tikzpicture}
+	
+\end{center}
+
+\end{landscape}
+\end{document}

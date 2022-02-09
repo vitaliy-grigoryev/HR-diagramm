@@ -1,0 +1,470 @@
+\documentclass[a4paper,14pt]{article}
+\usepackage{extsizes} %14pt
+
+\usepackage{gfsartemisia-euler} %для математических шрифтов
+\usepackage{tgbonum} %для основного текста
+\usepackage[light]{anttor}
+%\usefonttheme{serif}
+
+\usepackage[english, russian]{babel}
+\usepackage[utf8]{inputenc}
+\usepackage[T2A]{fontenc}
+\usepackage{tikz, pgfplots}
+\usetikzlibrary{arrows.meta}
+\usepackage[left=0.7cm,top=1cm,right=0.7cm,bottom=1cm]{geometry}
+\usepackage{indentfirst}
+\usepackage{lscape, lipsum}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage{amsthm}
+
+\usepackage{graphicx}
+\usepackage{xcolor}
+\usepackage{ragged2e}
+\usepackage[tikz]{bclogo}
+\usepackage{wasysym}
+\usepackage{array}
+
+
+\usepgfplotslibrary{external}
+\usepgfplotslibrary{fillbetween}
+\tikzexternalize
+
+\renewcommand{\deg}{\ensuremath{^{\circ}}}
+
+%\pgfplotstableread{H-R-test.txt}\loadedtable
+%\def\loadedtable{H-R-data.txt}
+\pgfplotsset{
+	compat=1.13, 
+	width=15cm,
+	height=21cm,
+}
+
+\newenvironment{itemize*}%
+{\vspace{0.1cm}
+	\begin{itemize}%
+		\setlength{\itemsep}{1pt}%
+		\setlength{\parskip}{1pt}}%
+	{\end{itemize}
+	\vspace{-0.1cm}
+}
+
+\begin{document}
+\thispagestyle{empty}
+\begin{center}
+	\begin{Large}
+\textbf{Диаграмма Герцшпрунга--Рассела}
+	\end{Large}
+\end{center}
+
+\noindent
+\begin{center}
+\begin{tikzpicture}
+\pgfplotsset{set layers}
+
+\tikzset{%
+	classstyle/.style={color=purple!50!black, opacity=0.4, line cap=round, smooth, line width={0.1cm}},%mark=*,
+	instability/.style={color=white!50!black, opacity=0.4, line cap=round, smooth, line width={1.0cm}},%mark=*,
+};
+
+% Рисуем сами звезды
+\begin{axis}[
+scale only axis,
+xmin=-0.6,
+ymin=-10,
+xmax=2,
+ymax=15,
+y dir=reverse,
+axis y line*=none,
+%axis x line*=none,
+axis x line*=top,
+restrict y to domain= -10:20,
+restrict x to domain= -0.5:2.5,
+xtick={-0.445319082,
+	-0.405512489,
+	-0.343058776,
+	-0.23233056,
+	0.009365914,
+	0.094639569,
+	0.203812398,
+	0.270510045,
+	0.347693699,
+	0.544418114,
+	0.671905766,
+	0.826770828,
+	1.018309707,
+	1.260472353,
+	1.575182241,
+	1.998975087,
+	2.59760267,
+	3.502541005
+},
+xticklabels={ , , , , , , , , , , , , , , , },
+xtick style={thin, gray},
+%hide x axis,
+hide y axis,
+]
+
+\addplot[mark=*, mark size=1pt, only marks, scatter, scatter src=x] table[header=true, x index=0, y index=1] {H-R-data.txt};%{\loadedtable};
+\addplot[mark=*, mark size=1pt, only marks, color=black!50!white] table[header=false, x index=0, y index=1] {wd.txt}; %scatter, scatter src=x
+
+%\addplot[mark=*, mark size=1pt, only marks, scatter, scatter src=x] table[header=true, x index=0, y index=1] {H-R-data_test.txt};
+
+\end{axis}
+
+%Верхняя и правая оси
+\begin{axis}[
+scale only axis,
+ymode=log,
+%title={Диаграмма Герцшпрунга-Рассела},
+xmin=-0.6,
+xmax=2,
+ymin=8.55E-5,
+ymax=8.55E+5,
+axis y line*=right,
+axis x line*=top,
+ylabel={\small Светимость $\mathrm{L/L_{\odot}}$},
+xlabel={\small Температура, K},
+%x dir=reverse,
+xtick={-0.445319082, 0.009365914, 0.270510045, 0.544418114, 0.826770828, 1.575182241},
+xticklabels={$30000$,$10000$,$7500$,$6000$,$5000$,$3500$},
+xtick style={thick, black},
+ytick style={thin, black},
+restrict y to domain= -10:20,
+restrict x to domain= -0.5:2.5,
+%grid=major
+]
+
+%Расставляем буквы классов внизу
+\addplot[
+mark=none, 
+only marks,
+point meta=explicit symbolic, 
+nodes near coords,
+every node near coord/.append style={xshift=0pt, yshift=-1pt, anchor=south},
+] coordinates {
+	(	-0.5	,	0.0001	) [O]
+	(	-0.22	,	0.0001	) [B]
+	(	 0.12	,	0.0001	) [A]
+	(	 0.4	,	0.0001	) [F]
+	(	 0.7	,	0.0001	) [G]
+	(	 1.2	,	0.0001	) [K]
+	(	 1.8	,	0.0001	) [M]	
+	(	-0.5	,	400000	) [O]
+	(	-0.22	,	400000	) [B]
+	(	 0.12	,	400000	) [A]
+	(	 0.4	,	400000	) [F]
+	(	 0.7	,	400000	) [G]
+	(	 1.2	,	400000	) [K]
+	(	 1.8	,	400000	) [M]	
+};
+\end{axis}
+
+%Левая и нижняя оси, дополнительная информация
+\begin{axis}[
+scale only axis,
+xlabel={\small Показатель цвета $\mathrm{B - V}$},
+ylabel={\small Абсолютная звездная величина $\mathrm{M_V}$},
+%grid=major,
+xmin=-0.6,
+ymin=-10,
+xmax=2,
+ymax=15,
+y dir=reverse,
+axis y line*=left,
+axis x line*=bottom,
+restrict y to domain= -10:20,
+restrict x to domain= -0.5:2.5,
+every node near coord/.append style={font=\footnotesize, fill=white!50, opacity=0.6, text opacity=1, rounded corners},
+tick style={thin, black}
+]
+
+%Яркие звезды-2
+\addplot [
+mark=star, 
+only marks,
+point meta=explicit symbolic, 
+nodes near coords,
+every node near coord/.append style={xshift=0pt, yshift=-2pt, anchor=north},
+] coordinates {
+	(	0.65	,	4.83	) [Солнце]
+	(	0.15	,	-5.71	) [Канопус]
+	(	1.22	,	-0.33	) [Арктур]
+	(	0.80	,	-0.51	) [Капелла]
+	(	-0.03	,	-7.84	) [Ригель]
+	(	-0.16	,	-2.86	) [Ахернар]
+	(	0.22	,	2.19	) [Альтаир]
+	(	0.99	,	1.05	) [Поллукс]
+	
+};
+
+%Яркие звезды-3
+\addplot [
+mark=star, 
+only marks,
+point meta=explicit symbolic, 
+nodes near coords,
+every node near coord/.append style={xshift=2pt, yshift=0pt, anchor=west},
+] coordinates {
+	
+	(	0.15	,	1.73	) [Фомальгаут]
+	(	-0.15	,	-3.92	) [Мимоза]
+	(	0.43	,	2.65	) [Процион]
+	(	1.44	,	-0.64	) [Альдебаран]
+	(	-0.03	,	11.18	) [Сириус B]
+	
+};
+
+%Яркие звезды-4 и кривые равных радиусов
+\addplot [
+mark=star, 
+only marks,
+point meta=explicit symbolic, 
+nodes near coords,
+every node near coord/.append style={xshift=0pt, yshift=2pt, anchor=south},
+] coordinates {
+	
+	(	0.00	,	0.57	) [Вега]	
+	(	0.71	,	4.08	) [Толиман]
+	(	-0.23	,	-5.75	) [Хадар]
+};
+\addplot [
+mark=star, 
+only marks,
+point meta=explicit symbolic, 
+nodes near coords,
+every node near coord/.append style={xshift=-2pt, yshift=0pt, anchor=east},
+] coordinates {
+	(	0.01	,	1.45	) [Сириус]
+	(	-0.24	,	-4.39	) [Акрукс]
+	(	-0.24	,	-3.55	) [Спика]
+	(	1.87	,	-5.65	) [Антарес]
+	(	1.85	,	-5.14	) [Бетельгейзе]
+	(	0.09	,	-8.78	) [Денеб]
+};
+
+\def\xsun{0.65}
+
+\foreach \rr in {0.01, 0.1, 1, 10, 100} {
+	
+	\addplot [color=green!50!black, samples=500] {4.83 - 5*log10(\rr)  - 10*log10( (23*x+29)*(46*\xsun+31)*(46*\xsun+85)/( (23*\xsun+29)*(46*x+31)*(46*x+85))  )};
+	
+};
+
+\addplot[
+only marks,
+point meta=explicit symbolic, 
+nodes near coords,
+every node near coord/.append style={yshift=-5pt, color=green!50!black, fill=none, rotate=-10},
+] coordinates {
+	(	1.8	,	12.14 ) [$0.1 R_{\odot}$]
+	(	1.8	,	 7.14 ) [$1 R_{\odot}$]
+	(	1.8	,	 2.14 ) [$10 R_{\odot}$]
+	(	1.8	,	-2.9 )  [$100 R_{\odot}$]
+};
+\addplot[
+only marks,
+point meta=explicit symbolic, 
+nodes near coords,
+every node near coord/.append style={yshift=-5pt, color=green!50!black, fill=none, rotate=-20},
+] coordinates {
+	(	0.54	,	14.53 ) [$0.01 R_{\odot}$]
+};
+
+%Drawing Classes
+\addplot [classstyle] coordinates {(-0.2,-6.5) (1.2, -7.6) (1.6, -7.9)};
+\addplot [classstyle] coordinates {(-0.2,-5.2) (0.4, -4.9) (1.6, -5.2)};
+\addplot [classstyle] coordinates {(-0.2,-3.0) (0.4, -2.6) (1.6, -3.0)};
+\addplot [classstyle] coordinates {(0.0,-1.8) (0.4, 0.0) (1.0, 0.2) (1.6, -1.0)};
+\addplot [classstyle] coordinates {(-0.05,-1.9) (0.2, 1.0) (0.8, 2.7) (1.2, 2.0)};
+\addplot [classstyle] coordinates {(-0.1,-2.0) (0.1, 1.5) (0.6, 4.2) (0.8, 5.5) (1.35, 8.1) (1.55, 10.7)};
+\addplot [classstyle] coordinates {(-0.2, 2.0) (0.6, 7.0) (1.0, 8.7)};
+\addplot [classstyle] coordinates {(-0.47, 6.0) (-0.32, 9.0) (0.0, 12.0) (0.4, 13.7)};
+
+\addplot[
+only marks,
+point meta=explicit symbolic, 
+nodes near coords,
+every node near coord/.append style={color=purple!50!black, fill=none},
+] coordinates {
+	(	0.8	,	-7.4 )  [$Ia$]
+	(	0.8	,	-5.0 )  [$Ib$]
+	(	0.8	,	-2.7 )  [$II$]
+	(	0.8,	 1.0  ) [$III$]
+	(	1.2	,	 2.9  ) [$IV$]
+	(	1.2	,	 7.0  ) [$V$]
+	(	0.8	,	 8.8  ) [$VI$]
+	(	0.5	,	13.5 )  [$VII$]
+};
+
+	%Полоса нестабильности. Масса = 10 масс Солнца, z = 0.0004
+	\addplot[blue!50!black, dashed, name path=blueborder] coordinates {
+		(	-0.138529266	,	10.09204112	)
+		(	-0.114439784	,	9.239730651	)
+		(	-0.087988095	,	8.351140923	)
+		(	-0.058827675	,	7.423045586	)
+		(	-0.02654339	,	6.4517678	)
+		(	0.009365914	,	5.433092248	)
+		(	0.04951035	,	4.362154572	)
+		(	0.094639569	,	3.233300889	)
+		(	0.145684137	,	2.039907101	)
+		(	0.203812398	,	0.774143372	)
+		(	0.270510045	,	-0.573337515	)
+		(	0.347693699	,	-2.013819479	)
+		(	0.437876784	,	-3.561098132	)
+		(	0.544418114	,	-5.23228639	)
+		(	0.671905766	,	-7.048971455	)
+		(	0.826770828	,	-9.038924794	)
+		
+		
+		
+	};
+	\addplot[red!50!black, dashed, name path=redborder] coordinates {
+		(	-0.138529266	,	10.2696638	)
+		(	-0.114439784	,	9.587992709	)
+		(	-0.087988095	,	8.87730576	)
+		(	-0.058827675	,	8.135022542	)
+		(	-0.02654339	,	7.358202347	)
+		(	0.009365914	,	6.543473798	)
+		(	0.04951035	,	5.686946421	)
+		(	0.094639569	,	4.784098286	)
+		(	0.145684137	,	3.829631492	)
+		(	0.203812398	,	2.817283798	)
+		(	0.270510045	,	1.739579375	)
+		(	0.347693699	,	0.587493437	)
+		(	0.437876784	,	-0.650007639	)
+		(	0.544418114	,	-1.986610625	)
+		(	0.671905766	,	-3.439580791	)
+		(	0.826770828	,	-5.031129535	)
+		(	1.018309707	,	-6.790505047	)
+		(	1.260472353	,	-8.757319535	)
+		
+	};
+	
+	\addplot [gray!30] fill between [of=blueborder and redborder];
+	
+	\addplot[
+	only marks,
+	point meta=explicit symbolic, 
+	nodes near coords,
+	every node near coord/.append style={yshift=0pt, color=black, fill=none, rotate=55},
+	] coordinates {
+		(	0.74	,	-4.0 ) [\emph{Цефеиды}]
+	};
+	\addplot[
+	only marks,
+	point meta=explicit symbolic, 
+	nodes near coords,
+	every node near coord/.append style={yshift=0pt, color=black, fill=none, rotate=65},
+	] coordinates {
+		(	0.42,	-0.5 ) [\emph{RR Лиры}]
+	};
+	\addplot[
+	only marks,
+	point meta=explicit symbolic, 
+	nodes near coords,
+	every node near coord/.append style={yshift=0pt, color=black, fill=none, rotate=80},
+	] coordinates {
+		(	0.00,	 9.5 ) [\emph{ZZ Кита}]
+	};
+
+	\addplot [
+	mark=-, 
+	%only marks,
+	point meta=explicit symbolic, 
+	nodes near coords,
+	every node near coord/.style={xshift=0pt, yshift=0pt, anchor=west, node font={\footnotesize}},
+	smooth
+	] coordinates {
+		%(	0.331307732	,	-1.43	)	[$1^d$]	
+		(	0.418653744	,	-2.770710726	)	[\emph{3$^d$}]
+		(	0.499578259	,	-4.24	)	[\emph{10$^d$}]
+		(	0.59258929	,	-5.580710726	)	[\emph{30$^d$}]
+		(	0.700440756	,	-7.05	)	[\emph{100$^d$}]
+		%(	0.761024753	,	-8.390710726	)	[$300^d$]
+		
+	};
+
+\end{axis}
+
+\end{tikzpicture}
+
+\end{center}
+{\noindent \scriptsize Звезды~--- каталог Hipparcos (учтено среднее межзвездное поглощение $2^m$/кпк), белые карлики~--- Kleinman et al. 2012 (SDSS DR7), полоса нестабильности~--- Caputo et al. 2004, периоды соответствуют светимости классических цефеид, кривые равных радиусов проведены в предположении о сферической форме звезд и их чернотельном излучении
+}
+
+\newpage
+\thispagestyle{empty}
+\begin{landscape}
+
+\begin{center}
+	\begin{Large}
+	\textbf{Параметры 20 самых ярких звезд неба}
+	\end{Large}
+	
+
+\vspace{0.3cm}
+\begin{normalsize}
+\begin{tabular}{ll|rr|rr|cccccc}
+ \multicolumn{2}{c|}{Звезда и ее обозначение}& \multicolumn{2}{c|}{$\alpha$}& \multicolumn{2}{c|}{$\delta$}& Class& $m_V$ &$\mathrm{B - V}$& r, пк &M & T, K \\
+ \hline	
+Сириус	&$\mathrm{	\alpha	~	CMa	}$&$	6	^h$&$	45	^m$&$	-16	\deg$&$	43	' $&	A1Vm	&	-1.46	&	0.00	&	2.64	&	1.45	&	9940	\\
+Канопус	&$\mathrm{	\alpha	~	Car	}$&$	6	^h$&$	24	^m$&$	-52	\deg$&$	42	' $&	F0Ib    &	-0.72	&	0.15	&	95.88	&	-5.53	&	7350	\\
+Толиман	&$\mathrm{	\alpha	~	Cen	}$&$	14	^h$&$	40	^m$&$	-60	\deg$&$	50	' $&	G2V     &	-0.27	&	0.65	&	1.35	&	4.08	&	5750	\\
+Арктур	&$\mathrm{	\alpha	~	Boo	}$&$	14	^h$&$	16	^m$&$	19	\deg$&$	11	' $&	K2IIIp 	&	-0.05	&	1.22	&	11.25	&	-0.38	&	4300	\\
+Вега	&$\mathrm{	\alpha	~	Lyr	}$&$	18	^h$&$	37	^m$&$	38	\deg$&$	47	' $&	A0Va	&	0.03	&	0.00	&	7.76	&	0.58	&	10000	\\
+Капелла	&$\mathrm{	\alpha	~	Aur	}$&$	5	^h$&$	17	^m$&$	46	\deg$&$	0	' $&	K0III/G1III	&	0.08	&	0.80	&	12.94	&	+0,14/+0,29	&	4940/5700	\\
+Ригель	&$\mathrm{	\beta	~	Ori	}$&$	5	^h$&$	15	^m$&$	-8	\deg$&$	12	' $&	B8Ia  &	0.12	&	-0.03	&	260	&	-7.84	&	12 130	\\
+Процион	&$\mathrm{	\alpha	~	CMi	}$&$	7	^h$&$	39	^m$&$	5	\deg$&$	14	' $&	F5V  	&	0.38	&	0.42	&	3.50	&	2.65	&	6600	\\
+Ахернар	&$\mathrm{	\alpha	~	Eri	}$&$	1	^h$&$	38	^m$&$	-57	\deg$&$	14	' $&	B3Vp  	&	0.45	&	-0.17	&	44.09	&	-2.77	&	20000	\\
+Бетельгейзе	&$\mathrm{	\alpha	~	Ori	}$&$	5	^h$&$	55	^m$&$	7	\deg$&$	24	' $&	M2Ib  &	0.0 - 1.3	&	1.85	&	200	&	-5.14	&	3600	\\
+Хадар	&$\mathrm{	\beta	~	Cen	}$&$	14	^h$&$	4	^m$&$	-60	\deg$&$	22	' $&	B1III       	&	0.61	&	-0.23	&	161.03	&	-5.75	&	28000	\\
+Альтаир	&$\mathrm{	\alpha	~	Aql	}$&$	19	^h$&$	51	^m$&$	8	\deg$&$	52	' $&	A7V      	&	0.76	&	0.22	&	5.14	&	2.19	&	8250	\\
+Акрукс	&$\mathrm{	\alpha	~	Cru	}$&$	12	^h$&$	27	^m$&$	-63	\deg$&$	6	' $&	B0.5IV      	&	0.77	&	-0.24	&	98.33	&	-4.39	&	30000	\\
+Альдебаран	&$\mathrm{	\alpha	~	Tau	}$&$	4	^h$&$	36	^m$&$	16	\deg$&$	31	' $&	K5III     	&	0.87	&	1.44	&	19.96	&	-0.64	&	3910	\\
+Спика	&$\mathrm{	\alpha	~	Vir	}$&$	13	^h$&$	25	^m$&$	-11	\deg$&$	10	' $&	B1III/B2V    	&	0.98	&	-0.24	&	77.30	&	-3.55	&	22400/18500	\\
+Антарес	&$\mathrm{	\alpha	~	Sco	}$&$	16	^h$&$	29	^m$&$	-26	\deg$&$	26' $&	M1Ib	&	1.01	&	1.87	&	185.19	&	-5.28	&	3570	\\
+Поллукс	&$\mathrm{	\beta	~	Gem	}$&$	7	^h$&$	45	^m$&$	28	\deg$&$	2	' $&	K0III   	&	1.14	&	0.99	&	10.34	&	1.05	&	5000	\\
+Фомальгаут	&$\mathrm{	\alpha	~	PsA	}$&$	22	^h$&$	58	^m$&$	-29	\deg$&$	37	' $&	A3V         	&	1.17	&	0.15	&	7.69	&	1.73	&	9250	\\
+Мимоза	&$\mathrm{	\beta	~	Cru	}$&$	12	^h$&$	48	^m$&$	-59	\deg$&$	41	' $&	B0.5III     	&	1.25	&	-0.24	&	108.11	&	-4.14	&	30000	\\
+Денеб	&$\mathrm{	\alpha	~	Cyg	}$&$	20	^h$&$	41	^m$&$	45	\deg$&$	17	' $&	A2Ia        	&	1.25	&	0.09	&	805.40	&	-8.28	&	8550	\\
+\end{tabular}
+\end{normalsize}
+\end{center}
+
+
+%\vspace{-0.5cm}
+\noindent
+\begin{minipage}[l]{0.52\linewidth}
+\begin{itemize*}
+	\item $\alpha$~--- прямое восхождение
+	\item $\delta$~--- склонение
+	\item Class~--- спектральный класс и \emph{\textbf{класс светимости}} $\longrightarrow$
+	\item m~--- видимая звездная величина
+	\item $\mathrm{B-V}$~--- показатель цвета
+	\item r~--- расстояние от Солнца
+	\item M~--- абсолютная звездная величина
+	\item T~--- эффективная температура
+\end{itemize*}
+\end{minipage}
+\hfill
+\begin{minipage}[l]{0.45\linewidth}
+%\textbf{Классы светимости:}
+\begin{itemize*}
+\renewcommand{\labelitemi}{$\star$}
+		\item Ia+ или 0 --- гипергиганты (ярче $-8^m$)
+		\item I, Ia, Iab, Ib --- сверхгиганты
+		\item II, IIa, IIb — яркие гиганты ($\sim -3^m$)
+		\item III, IIIa, IIIab, IIIb --- гиганты ($\sim 0^m$)
+		\item IV --- субгиганты
+		\item V, Va, Vb --- звезды главной последовательности
+		\item VI —-- субкарлики
+		\item VII —-- белые карлики
+\end{itemize*}
+%	Светимость абсолютно черного тела:
+%	$L = S \sigma T^4$
+\end{minipage}
+
+\end{landscape}
+\end{document}
