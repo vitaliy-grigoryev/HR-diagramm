@@ -9,3 +9,5 @@ Include:
  - Spectral classes and luminosity classes
  - Lines of constant radius in black body approximation
  - Instability strip with labels and period-luminosity dependence
+
+Compilation with 'pdflatex.exe -synctex=1 -interaction=nonstopmode --extra-mem-top=9000000 -shell-escape %.tex'
